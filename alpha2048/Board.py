@@ -3,11 +3,15 @@ import numpy as np
 class Board:
     def __init__(self,size=[4,4]):
         self.size = size
-        self.board = np.zeros(size)
-        self.validpositions = list(range(size[0]*size[1]))
+        self.board = np.zeros(size).astype(int)
+
+    def init(self):
+        self.board = np.zeros(self.size).astype(int)
+        self.randomset()
+        self.randomset()
 
     def play(self,direction):
-        if direction not in [1,2,3,4]:
+        if direction not in [1,2,3,4]: # No actions
             return False
 
         status = self.roll(direction)
@@ -17,7 +21,7 @@ class Board:
         return True
 
     def roll(self,direction):
-        board = np.zeros(self.size)
+        board = np.zeros(self.size).astype(int)
         if direction == 1:              # Move left
             for i in range(self.size[1]):
                 n = 0
@@ -32,7 +36,7 @@ class Board:
         elif direction == 2:            # Move right
             for i in range(self.size[1]):
                 n = self.size[0]-1
-                for j in range(self.size[0]-1,0,-1):
+                for j in range(self.size[0]-1,-1,-1):
                     if self.board[i,j] != 0:
                         if self.board[i,j] == board[i,n]:
                             board[i,n] += board[i,n]
@@ -42,6 +46,17 @@ class Board:
                         
         elif direction == 3:            # Move down
             for j in range(self.size[0]):
+                m = self.size[1]-1
+                for i in range(self.size[1]-1,-1,-1):
+                    if self.board[i,j] != 0:
+                        if self.board[i,j] == board[m,j]:
+                            board[m,j] += board[m,j]
+                        else:
+                            if board[m,j]!=0: m -= 1
+                            board[m,j] = self.board[i,j]                      
+
+        elif direction == 4:            # Move up
+            for j in range(self.size[0]):
                 m = 0
                 for i in range(self.size[1]):
                     if self.board[i,j] != 0:
@@ -49,30 +64,24 @@ class Board:
                             board[m,j] += board[m,j]
                         else:
                             if board[m,j]!=0: m += 1
-                            board[m,j] = self.board[i,j]                        
+                            board[m,j] = self.board[i,j] 
 
-        elif direction == 4:            # Move up
-            for j in range(self.size[0]):
-                m = self.size[1]-1
-                for i in range(self.size[1]-1,0,-1):
-                    if self.board[i,j] != 0:
-                        if self.board[i,j] == board[m,j]:
-                            board[m,j] += board[m,j]
-                        else:
-                            if board[m,j]!=0: m -= 1
-                            board[m,j] = self.board[i,j]
-
-        status = np.sum((self.board-board))!=0
-        self.board = board
+        status = (np.sum(np.square(self.board-board))!=0)
+        self.board = board.copy()
         return status
         
     def randomset(self):
         '''
         Put number in blank grid randomly
         '''
-        index = np.random.randint(len(self.validpositions))
-        pos = self.validpositions[index]
-        self.validpositions.remove(pos)
+        validpositions = list()
+        for i in range(self.size[0]):
+            for j in range(self.size[1]):
+                if self.board[i,j] == 0:
+                    validpositions.append(i*self.size[1]+j)
+        index = np.random.randint(len(validpositions))
+        pos = validpositions[index]
+        validpositions.remove(pos)
 
         x = int(pos/self.size[0])
         y = pos%self.size[0]
@@ -80,6 +89,9 @@ class Board:
     
     def boardinfo(self):
         return self.board
+
+    def score(self):
+        return np.max(self.board)
     
     def status(self):
         status = np.sum(self.board!=0) == self.size[0]*self.size[1]

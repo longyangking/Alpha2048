@@ -9,23 +9,25 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 class UI(threading.Thread):
-    def __init__(self,pressaction,chessboardinfo,sizeunit=50):
+    def __init__(self,pressaction,boardinfo,sizeunit=100):
         threading.Thread.__init__(self)
         self.ui = None
         self.app = None
 
-        self.chessboardinfo = chessboardinfo
+        self.boardinfo = boardinfo
         self.sizeunit = sizeunit
         self.pressaction = pressaction
     
     def run(self):
         print('Init UI...')
         self.app = QApplication(sys.argv)
-        self.UI = nativeUI.nativeUI(pressaction=self.pressaction,chessboardinfo=self.chessboardinfo)
+        self.ui = nativeUI.nativeUI(pressaction=self.pressaction,boardinfo=self.boardinfo,sizeunit=self.sizeunit)
         self.app.exec_()
 
-    def setchessboard(self,chessboardinfo):
-        return self.UI.setchessboard(chessboardinfo)
+    def setboard(self,boardinfo):
+        while not self.ui:
+            pass
+        return self.ui.setboard(boardinfo)
     
-    def gameend(self,role):
-        self.UI.gameend(winner=role)
+    def gameend(self,score):
+        self.ui.gameend(score)
