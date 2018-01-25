@@ -12,18 +12,30 @@ class Alpha2048:
             model = AlphaModel.Model(size=self.size)
             self.models.append(model)            
 
-    def init(self):
+    def init(self,verbose=False):
         '''
         Initiate Game Engine and Learning Pre-Process
         '''
-        pass
+        for i in range(len(self.models)):
+            if verbose:
+                print('Alpha Models: Initiating {num}th...'.format(num=i+1))
+            self.models[i].init()  
+        if verbose:
+            print('Alpha Models: Initiation successful!')
 
     def train(self,verbose=False):
         '''
         Train Models
         '''
-        pass
+        
+        
+    def selfplay(self,model,depth=5):
+        '''
+        
+        
+        
 
+        
 
     def savemodels(self,path,fileformat='.h5'):
         '''
@@ -56,6 +68,8 @@ class Alpha2048:
 if __name__ == '__main__':
     opts, args = getopt.getopt(sys.argv[1:], "s:h",["help","train","retrain","test"])
     groupsize=10
+    size = [4,4]
+    models = None
     for op, value in opts:
         if op in ('--help','-h'):
             print('''
@@ -70,4 +84,6 @@ if __name__ == '__main__':
             groupsize = value
             
         if op == '--retrain':
-            pass
+            models = Alpha2048(size=size,groupsize=groupsize)
+            models.init(verbose=True)
+            
