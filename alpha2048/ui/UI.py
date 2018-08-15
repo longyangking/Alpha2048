@@ -3,7 +3,6 @@ import threading
 from . import nativeUI
 
 import sys
-import Config
 from PyQt5.QtWidgets import QWidget, QApplication,QDesktopWidget
 from PyQt5.QtCore import * 
 from PyQt5.QtGui import *
@@ -19,7 +18,6 @@ class UI(threading.Thread):
         self.pressaction = pressaction
     
     def run(self):
-        print('Init UI...')
         self.app = QApplication(sys.argv)
         self.ui = nativeUI.nativeUI(pressaction=self.pressaction,boardinfo=self.boardinfo,sizeunit=self.sizeunit)
         self.app.exec_()

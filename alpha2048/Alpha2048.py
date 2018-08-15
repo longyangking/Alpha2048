@@ -1,89 +1,46 @@
-import os
-import numpy as np
-import GameEngine 
-import AlphaModel
-import sys, getopt
+'''
+Main process for AlphaMineSweeper
+'''
+import numpy as np 
+import argparse
 
-class Alpha2048:
-    def __init__(self,size,groupsize):
-        self.models = list()
-        self.size = size
-        for _ in range(groupsize):
-            model = AlphaModel.Model(size=self.size)
-            self.models.append(model)            
+__version__ = "0.0.1"
+__author__ = "Yang Long"
+__info__ = "Play 2048 Game with AI"
 
-    def init(self,verbose=False):
-        '''
-        Initiate Game Engine and Learning Pre-Process
-        '''
-        for i in range(len(self.models)):
-            if verbose:
-                print('Alpha Models: Initiating {num}th...'.format(num=i+1))
-            self.models[i].init()  
+__default_board_shape__ = 4, 4
+__default_state_shape__ = *__default_board_shape__, 1
+__filename__ = 'model.h5'
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__info__)
+    parser.add_argument("--retrain", action='store_true', default=False, help="Re-Train AI")
+    parser.add_argument("--train",  action='store_true', default=False, help="Train AI")
+    parser.add_argument("--verbose", action='store_true', default=False, help="Verbose")
+    parser.add_argument("--play", action='store_true', default=False, help="Play game")
+    parser.add_argument("--playai", action='store_true', default=False, help="Play game with AI")
+
+    args = parser.parse_args()
+    verbose = args.verbose
+
+    if args.train:
         if verbose:
-            print('Alpha Models: Initiation successful!')
+            print("Start to train AI")
 
-    def train(self,verbose=False):
-        '''
-        Train Models
-        '''
-        
-        
-    def selfplay(self,model,depth=5):
-        '''
-        
-        
-        
+        # TODO Load lastest model here and continue training
 
-        
+    if args.retrain:
+        if verbose:
+            print("Start to re-train AI with state shape: {0}".format(__default_state_shape__))
 
-    def savemodels(self,path,fileformat='.h5'):
-        '''
-        Save models
-        '''
-        path = path.strip()
-        path = path.rstrip()
+        pass
 
-        if not os.path.exists(path):
-            os.makedirs(path)
-        
-        for i in range(len(self.models)):
-            filename = path + '\\' + str(i) + fileformat
-            self.models[i].save(filename)
-        
-    def loadmodels(self,path,fileformat='.h5'):
-        '''
-        Load models
-        '''
-        models = list()
-        filelist = os.listdir(path)
-        for f in filelist:
-            if os.path.splitext(f)[1] == fileformat:
-                filename = path + '\\' + f
-                model = AlphaModel.Model(size=self.size) # Bug here
-                model.load(filename)
-                models.append(model)
-        self.models = models
+    if args.playai:
+        pass
 
-if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], "s:h",["help","train","retrain","test"])
-    groupsize=10
-    size = [4,4]
-    models = None
-    for op, value in opts:
-        if op in ('--help','-h'):
-            print('''
-            Parameters:
-                -h/--help:  show help information
-                --train:    train model on batches
-                --test:     test models and show test results
-                --retrain:  retrain model
-            ''')
-            
-        if op == '-s':
-            groupsize = value
-            
-        if op == '--retrain':
-            models = Alpha2048(size=size,groupsize=groupsize)
-            models.init(verbose=True)
-            
+    if args.play:
+        print("Play game. Please close game in terminal after closing window (i.e, Press Ctrl+C).")
+        from Game2048 import Game2048
+
+        game2048 = Game2048(size=__default_board_shape__)
+        game2048.start()

@@ -4,7 +4,7 @@
 ## Features
 + Home-made 2048 Game Engine
 
-![](./pics/2048.png)
+<img src=./pics/2048.png width="80%" height="80%" />
 
 + Reinforcement learning similar with Alpha Zero
 
@@ -13,12 +13,13 @@
 + Keras,Tensorflow, Theano (For reinforcement learning)
 + PyQt5 (For UI)
 
-## How to play
-+ Human play:
+## How to use
++ Play 2048 game by yourself
 
-    ```$python alpha2048/Game2048.py```
+        cd alpha2048
+        python Alpha2048.py --play
 
-+ Machine training: (Coming soon)
++ Train AI model to play 2048 game: (Coming soon)
 
 ## E-mail
 longyang_123@yeah.net  

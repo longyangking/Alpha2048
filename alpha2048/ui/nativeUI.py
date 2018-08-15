@@ -1,6 +1,5 @@
 import numpy as np 
 import sys
-import Config
 from PyQt5.QtWidgets import QWidget, QApplication,QDesktopWidget
 from PyQt5.QtCore import * 
 from PyQt5.QtGui import *
@@ -124,7 +123,8 @@ class nativeUI(QWidget):
                 else:
                     qp.setPen(QColor(0,0,0))
                 qrect = QRect(j*self.ax, i*self.ay, self.ax, self.ay)
-                qp.drawText(qrect,0x0004|0x0080, str(self.boardinfo[i,j]))
+                if self.boardinfo[i,j] != 0:
+                    qp.drawText(qrect,0x0004|0x0080, str(self.boardinfo[i,j]))
         
 
 if __name__ == "__main__":
