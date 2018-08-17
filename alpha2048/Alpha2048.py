@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     if args.play:
         print("Play game. Please close game in terminal after closing window (i.e, Press Ctrl+C).")
-        from Game2048 import Game2048
+        from game2048 import Game2048, Human
 
-        game2048 = Game2048(size=__default_board_shape__)
+        game2048 = Game2048(state_shape=__default_state_shape__, player=Human(), verbose=verbose)
         game2048.start()

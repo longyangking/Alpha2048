@@ -10,8 +10,8 @@ class Board:
         self.randomset()
         self.randomset()
 
-    def play(self,direction):
-        if direction not in [1,2,3,4]: # No actions
+    def play(self, direction):
+        if direction not in [0,1,2,3]: # No actions
             return False
 
         status = self.roll(direction)
@@ -22,7 +22,7 @@ class Board:
 
     def roll(self,direction):
         board = np.zeros(self.size).astype(int)
-        if direction == 1:              # Move left
+        if direction == 0:              # Move left
             for i in range(self.size[1]):
                 n = 0
                 for j in range(self.size[0]):
@@ -33,7 +33,7 @@ class Board:
                             if board[i,n]!=0: n += 1
                             board[i,n] = self.board[i,j]
 
-        elif direction == 2:            # Move right
+        elif direction == 1:            # Move right
             for i in range(self.size[1]):
                 n = self.size[0]-1
                 for j in range(self.size[0]-1,-1,-1):
@@ -44,7 +44,7 @@ class Board:
                             if board[i,n]!=0: n -= 1
                             board[i,n] = self.board[i,j]
                         
-        elif direction == 3:            # Move down
+        elif direction == 2:            # Move down
             for j in range(self.size[0]):
                 m = self.size[1]-1
                 for i in range(self.size[1]-1,-1,-1):
@@ -55,7 +55,7 @@ class Board:
                             if board[m,j]!=0: m -= 1
                             board[m,j] = self.board[i,j]                      
 
-        elif direction == 4:            # Move up
+        elif direction == 3:            # Move up
             for j in range(self.size[0]):
                 m = 0
                 for i in range(self.size[1]):
@@ -87,10 +87,10 @@ class Board:
         y = pos%self.size[0]
         self.board[x,y] = 2
     
-    def boardinfo(self):
-        return self.board
+    def get_board(self):
+        return np.copy(self.board)
 
-    def score(self):
+    def get_score(self):
         return np.max(self.board)
     
     def status(self):
