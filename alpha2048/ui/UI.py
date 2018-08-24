@@ -1,6 +1,7 @@
 import numpy as np 
 import threading
 from . import nativeUI
+from . import viewer
 
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication,QDesktopWidget
@@ -29,3 +30,21 @@ class UI(threading.Thread):
     
     def gameend(self,score):
         self.ui.gameend(score)
+
+class Viewer(threading.Thread):
+    def __init__(self, boards, scores,sizeunit=100):
+        threading.Thread.__init__(self)
+        self.ui = None
+        self.app = None
+
+        self.boards = boards
+        self.scores = scores
+        self.sizeunit = sizeunit
+    
+    def run(self):
+        self.app = QApplication(sys.argv)
+        self.ui = viewer.Viewer(
+            boards=self.boards,
+            scores=self.scores,
+            sizeunit=self.sizeunit)
+        self.app.exec_()

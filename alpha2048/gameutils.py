@@ -1,9 +1,13 @@
 import numpy as np 
 
 class Board:
-    def __init__(self,size=[4,4]):
+    def __init__(self,size=[4,4], board=None):
         self.size = size
-        self.board = np.zeros(size).astype(int)
+
+        if board is not None:
+            self.board = board
+        else:
+            self.board = np.zeros(size).astype(int)
 
     def init(self):
         self.board = np.zeros(self.size).astype(int)
@@ -86,7 +90,27 @@ class Board:
         x = int(pos/self.size[0])
         y = pos%self.size[0]
         self.board[x,y] = 2
-    
+
+    def get_availables(self):
+        availables = list()
+        for action in np.arange(4):
+            if self.play_virtual(action):
+                availables.append(action)
+
+        return availables
+
+    def play_virtual(self, direction):
+        flag = True
+
+        _board = np.copy(self.board)
+
+        self.roll(direction)
+        if (_board == self.board).all():
+            flag = False
+
+        self.board = _board
+        return flag
+
     def get_board(self):
         return np.copy(self.board)
 

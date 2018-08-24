@@ -10,6 +10,7 @@ __info__ = "Play 2048 Game with AI"
 
 __default_board_shape__ = 4, 4
 __default_state_shape__ = *__default_board_shape__, 1
+__default_action_dim__ = 4
 __filename__ = 'model.h5'
 
 if __name__ == "__main__":
@@ -25,18 +26,75 @@ if __name__ == "__main__":
 
     if args.train:
         if verbose:
-            print("Start to train AI")
+            print("Contiune to train AI with state shape: {0}".format(__default_state_shape__))
 
-        # TODO Load lastest model here and continue training
+        from train import TrainAI
+        from ai import AI
 
+        ai = AI(
+            state_shape=__default_state_shape__,
+            action_dim=__default_action_dim__,
+            verbose=verbose
+        )
+
+        if verbose:
+            print("Loading AI model from file: [{0}] ... ".format(__filename__),end="")
+        ai.load_nnet(__filename__)
+        if verbose:
+            print("OK!")
+
+        trainai = TrainAI(
+            state_shape=__default_state_shape__,
+            ai=ai,
+            verbose=verbose
+        )
+        trainai.start(__filename__)
+
+        if verbose:
+            print("End of training and the latest model is saved as file [{0}]".format(__filename__))
+        
     if args.retrain:
         if verbose:
             print("Start to re-train AI with state shape: {0}".format(__default_state_shape__))
 
-        pass
+        from train import TrainAI
+
+        trainai = TrainAI(
+            state_shape=__default_state_shape__,
+            verbose=verbose
+        )
+        trainai.start(__filename__)
+
+        if verbose:
+            print("End of re-train and the model is saved as file [{0}]".format(__filename__))
 
     if args.playai:
-        pass
+        if verbose:
+            print("Visualize AI performance with state shape: {0}".format(__default_state_shape__))
+
+        from game2048 import VisualizeAI
+        from ai import AI
+
+        ai = AI(
+            state_shape=__default_state_shape__,
+            action_dim=__default_action_dim__,
+            verbose=verbose
+        )
+
+        if verbose:
+            print("Loading latest AI model from file: [{0}] ...".format(__filename__),end="")
+        ai.load_nnet(__filename__)
+        if verbose:
+            print("OK!")
+
+        visualizer = VisualizeAI(
+            state_shape=__default_state_shape__,
+            ai=ai,
+            verbose=verbose
+        )
+        
+        visualizer.start() # Run a game to get result
+        visualizer.view()  
 
     if args.play:
         print("Play game. Please close game in terminal after closing window (i.e, Press Ctrl+C).")

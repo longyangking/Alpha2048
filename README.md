@@ -10,16 +10,33 @@
 
 ## Requirements
 + Numpy
-+ Keras,Tensorflow, Theano (For reinforcement learning)
++ Keras, Tensorflow (For reinforcement learning)
 + PyQt5 (For UI)
 
 ## How to use
-+ Play 2048 game by yourself
++ Play 2048 game by yourself:
 
         cd alpha2048
         python Alpha2048.py --play
 
-+ Train AI model to play 2048 game: (Coming soon)
+Press key-up, key-down, key-left and key-right to play
+
++ Re-Train AI model to play 2048 game: 
+
+        cd alpha2048
+        python Alpha2048.py --retrain --verbose
+
++ Continue to train AI model to play 2048 game: 
+
+        cd alpha2048
+        python Alpha2048.py --train --verbose
+
++ Visualize AI model to play 2048 game: 
+
+        cd alpha2048
+        python Alpha2048.py --playai --verbose
+
+Press key-up or key-down to watch process
 
 ## E-mail
 longyang_123@yeah.net  

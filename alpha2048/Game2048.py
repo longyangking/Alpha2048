@@ -57,16 +57,24 @@ class GameEngine:
             state = self.states[-1]
         return state
 
-    def update(self):
-        self.board.play(self.player.play(state=self.get_state()))
-
+    def update(self, is_ai=False):
+        if is_ai:
+            actions = np.zeros(4)
+            action_prob, value = self.player.evaluate_function(state=self.get_state())
+            availables = self.board.get_availables()
+            actions[availables] = action_prob[availables]
+            action = np.argmax(actions)
+        else:
+            action = self.player.play(state=self.get_state())
+            
+        self.board.play(action)
         return self.board.status()
 
     def get_score(self):
         return self.board.get_score()
 
 class Game2048:
-    def __init__(self, state_shape, player=None, verbose=False):
+    def __init__(self, state_shape, player, verbose=False):
         self.state_shape = state_shape
 
         self.gameengine = None
@@ -92,5 +100,37 @@ class Game2048:
         if self.verbose:
             print('Game End with score: {0}'.format(self.gameengine.get_score()))
 
-    def start_ai(self):
-        pass
+class VisualizeAI:
+    def __init__(self, state_shape, ai, verbose=False):
+        self.state_shape = state_shape
+        self.ai = ai
+        self.verbose = verbose
+
+        self.boards = list()
+        self.scores = list()
+
+    def start(self):
+        if self.verbose:
+            print("Start to run a new game to get result...")
+
+        gameengine = GameEngine(state_shape=self.state_shape, player=self.ai)
+        gameengine.start()
+
+        self.boards.append(gameengine.get_board())
+        self.scores.append(gameengine.get_score())
+
+        while not gameengine.update(is_ai=True):
+            self.boards.append(gameengine.get_board())
+            self.scores.append(gameengine.get_score())
+
+        if self.verbose:
+            print("End of runing game with final score: [{0}]".format(self.scores[-1]))
+
+    def view(self, sizeunit=100):
+        viewer = ui.Viewer(
+            boards=self.boards,
+            scores=self.scores,
+            sizeunit=sizeunit
+            )
+
+        viewer.start()

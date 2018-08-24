@@ -28,7 +28,7 @@ class NeuralNetwork:
         network_structure,
         learning_rate=1e-3,
         l2_const=1e-4,
-        verbose
+        verbose=False
         ):
 
         self.input_shape = input_shape
@@ -36,7 +36,6 @@ class NeuralNetwork:
         self.network_structure = network_structure
 
         self.learning_rate = learning_rate
-        self.momentum = momentum
         self.l2_const = l2_const
 
         self.verbose = verbose
@@ -146,7 +145,7 @@ class NeuralNetwork:
         action = Dense(
 			self.output_shape, 
             use_bias=False,
-            activation='tanh',
+            activation='relu',
             kernel_regularizer=regularizers.l2(self.l2_const),
             name = 'action'
 			)(out)
@@ -162,8 +161,8 @@ class NeuralNetwork:
         return loss
 
     def predict(self, X):
-        #X = X.reshape(self.input_shape)
-        action_prob, value = self.model.predict([X])
+        X = X.reshape(1, *self.input_shape)
+        action_prob, value = self.model.predict(X)
         return action_prob[0], value[0]
 
     def save_model(self, filename):
@@ -198,7 +197,8 @@ class AI:
         self.nnet = NeuralNetwork(
             input_shape=self.state_shape,
             output_dim=action_dim,
-            network_structure=network_structure)
+            network_structure=network_structure,
+            verbose=self.verbose)
 
     def load_nnet(self, filename):
         self.nnet.load_model(filename)
@@ -209,18 +209,22 @@ class AI:
     def plot_nnet(self, filename):
         self.nnet.plot_model(filename)
 
-    def update(self, data, epochs, batch_size):
+    def update(self, dataset, epochs, batch_size):
         '''
         Update neural network
         '''
-        Xs, ys = data
+        states, actions, values = dataset
+        Xs = states
+        ys = [actions, values]
         return self.nnet.update(Xs, ys)
 
-    def train(self, data, epochs=30, batch_size=128):
+    def train(self, dataset, epochs, batch_size):
         '''
         Train neural network
         '''
-        Xs, ys = data
+        states, actions, values = dataset
+        Xs = states
+        ys = [actions, values]
         return self.nnet.fit(
             Xs, ys, 
             epochs=epochs, 
